@@ -1,0 +1,118 @@
+countries = {
+    "BE": "10YBE----------2",
+    "DK": "10Y1001A1001A65H",
+    "FR": "10YFR-RTE------C",
+    "DE": "10Y1001A1001A83F",
+    "IE": "10YIE-1001A00010",
+    "LU": "10YLU-CEGEDEL-NQ",
+    "NL": "10YNL----------L",
+    "NO": "10YNO-0--------C",
+    "CH": "10YCH-SWISSGRIDZ",
+    "UK": "10Y1001A1001A92E",
+}
+# Day-ahead Prices Bidding Zones per country
+dap_bidding_zones = {
+    "BE": ["10YBE----------2"],
+    "DK": ["10YDK-1--------W", "10YDK-2--------M"],
+    "FR": ["10YFR-RTE------C"],
+    # "DE": ["10YDOM-CZ-DE-SKK", "10Y1001A1001A63L", "10Y1001A1001A82H"],
+    "DE": ["10Y1001A1001A63L", "10Y1001A1001A82H"],
+    "IE": ["10Y1001A1001A59C"],
+    "LU": ["10Y1001A1001A63L", "10Y1001A1001A82H"],
+    "NL": ["10YNL----------L"],
+    "NO": [
+        "10YNO-1--------2",
+        "10YNO-2--------T",
+        # "50Y0JVU59B4JWQCU",
+        "10YNO-3--------J",
+        "10YNO-4--------9",
+        "10Y1001A1001A48H",
+    ],
+    "CH": ["10YCH-SWISSGRIDZ"],
+    "UK": ["10YGB----------A", "10Y1001A1001A59C"],
+}
+# Interconnection between countries
+# This list is the information as of 2024 spring with some interconnectors commented out either because the countries involved are no in our model, or because the interconnectors were not operational between 2015 Jan and 2020 Jan
+interconnections = {
+    "BE": ["FR", "LU", "NL", "UK"],  # "DE"
+    "DK": ["DE", "NL", "NO"],  # 'SE', "UK"
+    "FR": ["BE", "DE", "CH", "UK"],  # 'IT', 'ES'
+    "DE": ["DK", "FR", "LU", "NL", "CH"],  # "AT", "BE", "CZ", "PL", "SE", "NO"
+    "IE": ["UK"],
+    "LU": ["BE", "DE"],
+    "NL": ["BE", "DK", "DE", "NO", "UK"],
+    "NO": ["DK", "NL"],  # "DE", "FI", "SE", "UK"
+    "CH": ["FR", "DE"],  # "AT", "IT"
+    "UK": ["BE", "FR", "IE", "NL"],  # "DK", "NO"
+}
+interconnections_edge_matrix = [
+    [
+        "BE",
+        "BE",
+        "BE",
+        "BE",
+        "DK",
+        "DK",
+        "DK",
+        "FR",
+        "FR",
+        "FR",
+        "FR",
+        "DE",
+        "DE",
+        "DE",
+        "DE",
+        "DE",
+        "IE",
+        "LU",
+        "LU",
+        "NL",
+        "NL",
+        "NL",
+        "NL",
+        "NL",
+        "NO",
+        "NO",
+        "CH",
+        "CH",
+        "UK",
+        "UK",
+        "UK",
+        "UK",
+    ],
+    [
+        "FR",
+        "LU",
+        "NL",
+        "UK",
+        "DE",
+        "NL",
+        "NO",
+        "BE",
+        "DE",
+        "CH",
+        "UK",
+        "DK",
+        "FR",
+        "LU",
+        "NL",
+        "CH",
+        "UK",
+        "BE",
+        "DE",
+        "BE",
+        "DK",
+        "DE",
+        "NO",
+        "UK",
+        "DK",
+        "NL",
+        "FR",
+        "DE",
+        "BE",
+        "FR",
+        "IE",
+        "NL",
+    ],
+]
+# print(interconnections_edge_matrix)

@@ -1,0 +1,7 @@
+- Transmission
+  - Day-ahead Prices: BZN
+  - Cross-Border Physical Flows: CTA, BZN, CTY
+- Generation
+  - Actual Generation per Production Type: CTA, BZN, CTY
+- Load
+  - Total Load - Day Ahead: CTA, BZN, CTY
