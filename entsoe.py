@@ -13,6 +13,8 @@ from config import (
     interconnections_edge_matrix,
 )
 from torch_geometric.data import Data
+from torch_geometric_temporal.signal import DynamicGraphTemporalSignal
+from torch.utils.data import DataLoader
 import torch
 
 
@@ -302,5 +304,50 @@ def load_data():
     return data
 
 
-if __name__ == "__main__":
+def get_dap_dataloader(window_size, future_steps):
     data = load_data()
+
+    len_data = len(data)
+    all_x = []
+    all_edge_weights = []
+    all_edge_index = []
+    all_y = []
+    for i in range(0, len_data - window_size - future_steps):
+        window_data = data[i : i + window_size]
+        future_data = data[
+            i + window_size + future_steps - 1
+        ]  # one single observation at future_steps steps ahead
+
+        x = torch.stack([d.x for d in window_data])
+        edge_weights = torch.stack([d.edge_attr for d in window_data])
+        edge_index = torch.stack([d.edge_index for d in window_data])
+        y = future_data.x[:, 0]  # flow
+
+        # print(x.shape, edge_weights.shape, edge_index.shape, y.shape)
+        all_x.append(x)
+        all_edge_weights.append(edge_weights)
+        all_edge_index.append(edge_index)
+        all_y.append(y)
+
+    all_x = torch.stack(all_x)
+    all_edge_weights = torch.stack(all_edge_weights)
+    all_edge_index = torch.stack(all_edge_index)
+    all_y = torch.stack(all_y)
+
+    print(all_x.shape, all_edge_weights.shape, all_edge_index.shape, all_y.shape)
+
+    dataset = torch.utils.data.TensorDataset(
+        all_x, all_edge_weights, all_edge_index, all_y
+    )
+
+    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+
+    return dataloader
+
+
+if __name__ == "__main__":
+    dataloader = get_dap_dataloader(24, 4)
+    print(dataloader)
+    for x, edge_weights, edge_index, y in dataloader:
+        print(x.shape, edge_weights.shape, edge_index.shape, y.shape)
+        break
