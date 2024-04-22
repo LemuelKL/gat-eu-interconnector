@@ -19,6 +19,33 @@ import torch
 
 
 def load_data():
+
+    # Check for cached data
+    if os.path.exists("data"):
+        print("Loading cached data")
+        datetime_intersect = np.load("data/datetime_intersect.npy")
+        node_features = np.load("data/node_features.npy")
+        edge_indices = np.load("data/edge_indices.npy")
+        edge_attributes = np.load("data/edge_attributes.npy")
+        edge_labels = np.load("data/edge_labels.npy")
+
+        node_features = torch.tensor(node_features, dtype=torch.float32)
+        edge_indices = torch.tensor(edge_indices, dtype=torch.int64)
+
+        edge_attributes = torch.tensor(edge_attributes, dtype=torch.float32)
+        edge_labels = torch.tensor(edge_labels, dtype=torch.float32)
+
+        data = [
+            Data(
+                x=node_features[i],
+                edge_index=edge_indices[i],
+                edge_attr=edge_attributes[i],
+                y=edge_labels[i],
+            )
+            for i in range(len(datetime_intersect))
+        ]
+        return data
+
     # Load data from database
     load_dotenv()
     engine = create_engine(os.getenv("SQLALCHEMY_DATABASE_URI"))
@@ -291,6 +318,14 @@ def load_data():
         edge_labels.shape,
     )
 
+    # Save data
+    os.makedirs("data", exist_ok=True)
+    np.save("data/datetime_intersect.npy", datetime_intersect)
+    np.save("data/node_features.npy", node_features)
+    np.save("data/edge_indices.npy", edge_indices)
+    np.save("data/edge_attributes.npy", edge_attributes)
+    np.save("data/edge_labels.npy", edge_labels)
+
     data = [
         Data(
             x=node_features[i],
@@ -349,8 +384,10 @@ def get_dap_dataloader(window_size, future_steps, batch_size=50):
 
 
 if __name__ == "__main__":
-    dataloader = get_dap_dataloader(24, 4)
-    print(dataloader)
-    for x, edge_weights, edge_index, y in dataloader:
-        print(x.shape, edge_weights.shape, edge_index.shape, y.shape)
-        break
+    # dataloader = get_dap_dataloader(24, 4)
+    # print(dataloader)
+    # for x, edge_weights, edge_index, y in dataloader:
+    #     print(x.shape, edge_weights.shape, edge_index.shape, y.shape)
+    #     break
+    data = load_data()
+    print(len(data))
