@@ -304,7 +304,7 @@ def load_data():
     return data
 
 
-def get_dap_dataloader(window_size, future_steps):
+def get_dap_dataloader(window_size, future_steps, batch_size=50):
     data = load_data()
 
     len_data = len(data)
@@ -320,6 +320,9 @@ def get_dap_dataloader(window_size, future_steps):
 
         x = torch.stack([d.x for d in window_data])
         edge_weights = torch.stack([d.edge_attr for d in window_data])
+        # take the average of edge weights and retain its shape
+        avg_edge_weights = torch.mean(edge_weights, dim=0, keepdim=True)
+        edge_weights = avg_edge_weights.repeat(window_size, 1, 1)
         edge_index = torch.stack([d.edge_index for d in window_data])
         y = future_data.x[:, 0]  # flow
 
@@ -340,7 +343,7 @@ def get_dap_dataloader(window_size, future_steps):
         all_x, all_edge_weights, all_edge_index, all_y
     )
 
-    dataloader = DataLoader(dataset, batch_size=32, shuffle=True)
+    dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
 
     return dataloader
 
